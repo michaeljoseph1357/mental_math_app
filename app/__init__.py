@@ -12,6 +12,7 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
     
+    # Import routes inside the app context to avoid circular import issues
     with app.app_context():
         from . import routes, models
         db.create_all()

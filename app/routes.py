@@ -1,16 +1,17 @@
-from flask import render_template, redirect, url_for, request, flash
+from flask import render_template, redirect, url_for, request, flash, current_app as app
 from flask_login import login_user, login_required, logout_user, current_user
 from . import db
 from .models import User
 from . import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import create_app
-
-app = create_app()
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
