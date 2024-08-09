@@ -1,4 +1,6 @@
 import random
+from app.models import HighScore, db
+from flask import flash
 
 def generate_problem(difficulty, game_type):
     if difficulty == 'easy':
@@ -18,3 +20,19 @@ def generate_problem(difficulty, game_type):
         num1 = num1 * num2  # Ensure num1 is a multiple of num2, may need to revisit this depending on difficulty
 
     return num1, num2
+
+def update_high_score(user, game_type, difficulty, score):
+    high_score = HighScore.query.filter_by(user_id=user.id, game_type=game_type, difficulty=difficulty).first()
+    if high_score:
+        if score > high_score.score:
+            high_score.score = score
+            db.session.commit()
+            
+    else:
+        new_high_score = HighScore(user_id=user.id, game_type=game_type, difficulty=difficulty, score=score)
+        db.session.add(new_high_score)
+        db.session.commit()
+        
+    
+    return score
+        

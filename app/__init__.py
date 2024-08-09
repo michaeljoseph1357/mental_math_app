@@ -2,8 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap4  # Import Flask-Bootstrap
+from flask_migrate import Migrate
+
 
 db = SQLAlchemy()
+
 login_manager = LoginManager()
 
 def create_app():
@@ -15,6 +18,9 @@ def create_app():
     
     # Initialize Flask-Bootstrap
     Bootstrap4(app)
+
+    # Initialize Flask-Migrate
+    migrate = Migrate(app, db)
     
     # Import routes inside the app context to avoid circular import issues
     with app.app_context():

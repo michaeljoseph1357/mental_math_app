@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <h2>{{ difficulty|capitalize }} {{ game_type|capitalize }} Game</h2>
-            <p class="lead">Solve as many problems as you can in 2 minutes!</p>
+            <p class="lead">Solve as many problems as you can in {{ timer_value // 60 }} minutes!</p>
         </div>
     </div>
 
@@ -20,7 +20,9 @@
 
                 <!-- Form -->
                 <form method="POST" action="" class="mt-3">
-                    <input type="hidden" id="time_left" name="time_left" value="{{ time_left or 120 }}">
+                    <input type="hidden" id="time_left" name="time_left" value="{{ time_left }}">
+                    <input type="hidden" id="game_type" name="game_type" value="{{ game_type }}">
+                    <input type="hidden" id="difficulty" name="difficulty" value="{{ difficulty }}">
                     <div class="form-group">
                         <input type="number" name="answer" class="form-control form-control-lg text-center" placeholder="Your answer" required autofocus>
                         <input type="hidden" name="correct_answer" value="{{ correct_answer }}">
@@ -38,31 +40,40 @@
             <h3>Score: <span>{{ score }}</span></h3>
         </div>
         <div class="col-6 text-right">
-            <h3>Time left: <span id="timer">{{ time_left or 120 }}</span> seconds</h3>
+            <h3>Time left: <span id="timer">{{ time_left }}</span> seconds</h3>
         </div>
     </div>
 </div>
 
 <script>
-    // Countdown timer logic
-    let timeLeft = parseInt(document.getElementById('time_left').value);
-    const timerElement = document.getElementById('timer');
-    const timeLeftInput = document.getElementById('time_left');
+  // Countdown timer logic
+  let timeLeft = parseInt(document.getElementById('time_left').value);
+  const timerElement = document.getElementById('timer');
+  const timeLeftInput = document.getElementById('time_left');
+  const gameTypeInput = document.getElementById('game_type');
+  const difficultyInput = document.getElementById('difficulty');
+  
+  console.log('Initial Time Left:', timeLeft);
+  console.log('Game Type:', gameTypeInput.value);
+  console.log('Difficulty:', difficultyInput.value);
 
-    function countdown() {
-        timeLeft--;
+  function countdown() {
+      timeLeft--;
 
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            alert('Time is up! Your final score is {{ score }}.');
-            window.location.href = "{{ url_for('module_selection', game_type=game_type) }}";
-        } else {
-            timerElement.textContent = timeLeft;
-            timeLeftInput.value = timeLeft;  // Update hidden input with the remaining time
-        }
-    }
+      if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          console.log('Time is up, submitting form');
+          // Set form action to the new route and submit the form
+          const form = document.forms[0];
+          form.action = '/game_over';  // Route for handling game over logic
+          form.submit();
+      } else {
+          timerElement.textContent = timeLeft;
+          timeLeftInput.value = timeLeft;  // Update hidden input with the remaining time
+      }
+  }
 
-    const timerInterval = setInterval(countdown, 1000);
+  const timerInterval = setInterval(countdown, 1000);
 </script>
 
 <style>

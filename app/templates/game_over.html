@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Game Over{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <header>
+        <h1>Game Over</h1>
+    </header>
+    <main>
+        <section class="game-summary">
+            <h2>Your Final Score</h2>
+            <p>Your final score is: <strong>{{ score }}</strong></p>
+            <p>Game Type: <strong>{{ game_type }}</strong></p>
+            <p>Difficulty: <strong>{{ difficulty }}</strong></p>
+            <a href="{{ url_for('start_game', game_type=game_type, difficulty=difficulty) }}" class="btn btn-primary">Play Again</a>
+            <a href="{{ url_for('landing') }}" class="btn btn-secondary">Return to Landing Page</a>
+        </section>
+    </main>
+</div>
+{% endblock %}
