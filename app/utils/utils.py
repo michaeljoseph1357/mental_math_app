@@ -1,11 +1,20 @@
 import random
 
-def generate_problem(difficulty):
+def generate_problem(difficulty, game_type):
     if difficulty == 'easy':
-        return random.randint(1, 10), random.randint(1, 10)
+        num1, num2 = random.randint(1, 12), random.randint(1, 12)
     elif difficulty == 'medium':
-        return random.randint(10, 100), random.randint(10, 100)
+        num1, num2 = random.randint(12, 99), random.randint(12, 99)
     elif difficulty == 'hard':
-        return random.randint(100, 1000), random.randint(100, 1000)
-    else:
-        return 0, 0  # Fallback case
+        num1, num2 = random.randint(101, 999), random.randint(101, 999)
+
+    # Adjust for subtraction to avoid negative results
+    if game_type == 'subtraction':
+        if num1 < num2:
+            num1, num2 = num2, num1
+
+    # Adjust for division to avoid results less than 1
+    if game_type == 'division':
+        num1 = num1 * num2  # Ensure num1 is a multiple of num2, may need to revisit this depending on difficulty
+
+    return num1, num2

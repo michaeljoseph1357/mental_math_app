@@ -111,13 +111,13 @@ def start_game(game_type, difficulty):
             flash('Incorrect, try the next one!', 'danger')
 
         # Generate a new problem
-        num1, num2 = generate_problem(difficulty)
+        num1, num2 = generate_problem(difficulty, game_type)
         correct_answer = operation_func(num1, num2)
 
         return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=score, time_left=time_left, correct_answer=correct_answer)
 
     # Initial game start
-    num1, num2 = generate_problem(difficulty)
+    num1, num2 = generate_problem(difficulty, game_type)
     correct_answer = operation_func(num1, num2)
 
     return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=0, time_left=120, correct_answer=correct_answer)
