@@ -7,7 +7,7 @@ from . import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 from datetime import datetime
-from app.utils.utils import generate_addition_problem
+from app.utils.utils import generate_problem
 
 
 @login_manager.user_loader
@@ -64,73 +64,60 @@ def dashboard():
 def landing():
     return render_template('landing.html')
 
-@app.route('/module/<module_name>')
+@app.route('/module_selection/<game_type>')
 @login_required
-def module_selection(module_name):
-    if module_name in ['addition', 'subtraction', 'multiplication', 'division']:
-        return render_template(f'modules/{module_name}_module.html', module_name=module_name)
-    else:
-        flash('Invalid module selected.', 'danger')
-        return redirect(url_for('landing'))
+def module_selection(game_type):
+    valid_game_types = ['addition', 'subtraction', 'multiplication', 'division']
+    
+    if game_type not in valid_game_types:
+        flash('Invalid game type selected.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    return render_template('modules/module_selection.html', game_type=game_type)
     
 
-@app.route('/addition_game/<difficulty>', methods=['GET', 'POST'])
+@app.route('/<game_type>_game/<difficulty>', methods=['GET', 'POST'])
 @login_required
-def start_addition_game(difficulty):
+def start_game(game_type, difficulty):
     if difficulty not in ['easy', 'medium', 'hard']:
         flash('Invalid difficulty level selected.', 'danger')
-        return redirect(url_for('module_selection', module_name='addition'))
-    
+        return redirect(url_for('module_selection', game_type=game_type))
+
+    operation_map = {
+        'addition': {'symbol': '+', 'operation': lambda x, y: x + y},
+        'subtraction': {'symbol': '-', 'operation': lambda x, y: x - y},
+        'multiplication': {'symbol': '*', 'operation': lambda x, y: x * y},
+        'division': {'symbol': '/', 'operation': lambda x, y: x // y if y != 0 else 0}  # Integer division, avoid division by zero
+    }
+
+    if game_type not in operation_map:
+        flash('Invalid game type selected.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    operation_symbol = operation_map[game_type]['symbol']
+    operation_func = operation_map[game_type]['operation']
+
     if request.method == 'POST':
         # Handle the submission of an answer
         user_answer = int(request.form.get('answer'))
         correct_answer = int(request.form.get('correct_answer'))
         score = int(request.form.get('score'))
-        
+        time_left = int(request.form.get('time_left'))
+
         if user_answer == correct_answer:
             score += 1
             flash('Correct!', 'success')
         else:
             flash('Incorrect, try the next one!', 'danger')
-        
+
         # Generate a new problem
-        num1, num2 = generate_addition_problem(difficulty)
-        return render_template('games/addition_game.html', difficulty=difficulty, num1=num1, num2=num2, score=score)
-    
-    # Game start: Generate the first problem
-    num1, num2 = generate_addition_problem(difficulty)
-    return render_template('games/addition_game.html', difficulty=difficulty, num1=num1, num2=num2, score=0)
+        num1, num2 = generate_problem(difficulty)
+        correct_answer = operation_func(num1, num2)
 
-@app.route('/subtraction_game/<difficulty>')
-@login_required
-def start_subtraction_game(difficulty):
-    if difficulty not in ['easy', 'medium', 'hard']:
-        flash('Invalid difficulty level selected.', 'danger')
-        return redirect(url_for('module_selection', module_name='subtraction'))
-    
-    # Initial game setup for subtraction can go here
-    return render_template('games/subtraction_game.html', difficulty=difficulty)
+        return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=score, time_left=time_left, correct_answer=correct_answer)
 
-@app.route('/multiplication_game/<difficulty>')
-@login_required
-def start_multiplication_game(difficulty):
-    if difficulty not in ['easy', 'medium', 'hard']:
-        flash('Invalid difficulty level selected.', 'danger')
-        return redirect(url_for('module_selection', module_name='multiplication'))
-    
-    # Initial game setup for multiplication can go here
-    return render_template('games/multiplication_game.html', difficulty=difficulty)
+    # Initial game start
+    num1, num2 = generate_problem(difficulty)
+    correct_answer = operation_func(num1, num2)
 
-@app.route('/division_game/<difficulty>')
-@login_required
-def start_division_game(difficulty):
-    if difficulty not in ['easy', 'medium', 'hard']:
-        flash('Invalid difficulty level selected.', 'danger')
-        return redirect(url_for('module_selection', module_name='division'))
-    
-    # Initial game setup for division can go here
-    return render_template('games/division_game.html', difficulty=difficulty)
-
-
-
-
+    return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=0, time_left=120, correct_answer=correct_answer)

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ game_type|capitalize }} Module</h2>
+    <p>Select a difficulty level:</p>
+    <div class="row">
+        {% set difficulties = [('easy', 'success', 1), ('medium', 'warning', 2), ('hard', 'danger', 3)] %}
+        {% for level, color, stars in difficulties %}
+        <div class="col-md-4">
+            <a href="{{ url_for('start_game', game_type=game_type, difficulty=level) }}" class="btn btn-{{ color }} btn-block">
+                {% for _ in range(stars) %}<span class="fa fa-star"></span>{% endfor %} {{ level|capitalize }}
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

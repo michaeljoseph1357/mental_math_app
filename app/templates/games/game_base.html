@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <!-- Header Section -->
+    <div class="row">
+        <div class="col-12">
+            <h2>{{ difficulty|capitalize }} {{ game_type|capitalize }} Game</h2>
+            <p class="lead">Solve as many problems as you can in 2 minutes!</p>
+        </div>
+    </div>
+
+    <!-- Problem Display and Input (Vertical Layout) -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-auto">
+            <div class="math-problem">
+                <div class="problem-number">{{ num1 }}</div>
+                <div class="problem-number"><span class="math-symbol">{{ operation_symbol }}</span> {{ num2 }}</div>
+                <hr class="problem-line">
+
+                <!-- Form -->
+                <form method="POST" action="" class="mt-3">
+                    <input type="hidden" id="time_left" name="time_left" value="{{ time_left or 120 }}">
+                    <div class="form-group">
+                        <input type="number" name="answer" class="form-control form-control-lg text-center" placeholder="Your answer" required autofocus>
+                        <input type="hidden" name="correct_answer" value="{{ correct_answer }}">
+                        <input type="hidden" name="score" value="{{ score }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg mt-3">Submit Answer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Score and Timer -->
+    <div class="row mt-4">
+        <div class="col-6 text-left">
+            <h3>Score: <span>{{ score }}</span></h3>
+        </div>
+        <div class="col-6 text-right">
+            <h3>Time left: <span id="timer">{{ time_left or 120 }}</span> seconds</h3>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Countdown timer logic
+    let timeLeft = parseInt(document.getElementById('time_left').value);
+    const timerElement = document.getElementById('timer');
+    const timeLeftInput = document.getElementById('time_left');
+
+    function countdown() {
+        timeLeft--;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert('Time is up! Your final score is {{ score }}.');
+            window.location.href = "{{ url_for('module_selection', game_type=game_type) }}";
+        } else {
+            timerElement.textContent = timeLeft;
+            timeLeftInput.value = timeLeft;  // Update hidden input with the remaining time
+        }
+    }
+
+    const timerInterval = setInterval(countdown, 1000);
+</script>
+
+<style>
+    .math-problem {
+        font-size: 2rem;
+        line-height: 2.5rem;
+    }
+    .problem-number {
+        text-align: right;
+    }
+    .math-symbol {
+        float: left;
+        margin-right: 10px;
+    }
+    .problem-line {
+        border-top: 2px solid #000;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    input.form-control-lg {
+        font-size: 2rem;
+        text-align: right;
+    }
+</style>
+{% endblock %}

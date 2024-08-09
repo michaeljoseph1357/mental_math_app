@@ -5,18 +5,12 @@
     <h2>Choose a Learning Module</h2>
     <p>Select the type of problems you want to practice:</p>
     <div class="row">
+        {% set modules = [('addition', 'Addition'), ('subtraction', 'Subtraction'), ('multiplication', 'Multiplication'), ('division', 'Division')] %}
+        {% for module, label in modules %}
         <div class="col-md-3">
-            <a href="{{ url_for('module_selection', module_name='addition') }}" class="btn btn-primary btn-block">Addition</a>
+            <a href="{{ url_for('module_selection', game_type=module) }}" class="btn btn-primary btn-block">{{ label }}</a>
         </div>
-        <div class="col-md-3">
-            <a href="{{ url_for('module_selection', module_name='subtraction') }}" class="btn btn-primary btn-block">Subtraction</a>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ url_for('module_selection', module_name='multiplication') }}" class="btn btn-primary btn-block">Multiplication</a>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ url_for('module_selection', module_name='division') }}" class="btn btn-primary btn-block">Division</a>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

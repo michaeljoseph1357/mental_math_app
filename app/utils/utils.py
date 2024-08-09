@@ -1,14 +1,11 @@
 import random
 
-def generate_addition_problem(difficulty):
+def generate_problem(difficulty):
     if difficulty == 'easy':
-        num1 = random.randint(1, 10)
-        num2 = random.randint(1, 10)
+        return random.randint(1, 10), random.randint(1, 10)
     elif difficulty == 'medium':
-        num1 = random.randint(10, 50)
-        num2 = random.randint(10, 50)
-    else:  # hard
-        num1 = random.randint(50, 100)
-        num2 = random.randint(50, 100)
-    
-    return num1, num2
+        return random.randint(10, 100), random.randint(10, 100)
+    elif difficulty == 'hard':
+        return random.randint(100, 1000), random.randint(100, 1000)
+    else:
+        return 0, 0  # Fallback case
