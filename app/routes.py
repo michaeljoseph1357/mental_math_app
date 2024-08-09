@@ -5,6 +5,10 @@ from .models import User
 from .forms import RegistrationForm, LoginForm
 from . import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
+import random
+from datetime import datetime
+from app.utils.utils import generate_addition_problem
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -70,15 +74,32 @@ def module_selection(module_name):
         return redirect(url_for('landing'))
     
 
-@app.route('/addition_game/<difficulty>')
+@app.route('/addition_game/<difficulty>', methods=['GET', 'POST'])
 @login_required
 def start_addition_game(difficulty):
     if difficulty not in ['easy', 'medium', 'hard']:
         flash('Invalid difficulty level selected.', 'danger')
         return redirect(url_for('module_selection', module_name='addition'))
     
-    # Initial game setup can go here
-    return render_template('games/addition_game.html', difficulty=difficulty)
+    if request.method == 'POST':
+        # Handle the submission of an answer
+        user_answer = int(request.form.get('answer'))
+        correct_answer = int(request.form.get('correct_answer'))
+        score = int(request.form.get('score'))
+        
+        if user_answer == correct_answer:
+            score += 1
+            flash('Correct!', 'success')
+        else:
+            flash('Incorrect, try the next one!', 'danger')
+        
+        # Generate a new problem
+        num1, num2 = generate_addition_problem(difficulty)
+        return render_template('games/addition_game.html', difficulty=difficulty, num1=num1, num2=num2, score=score)
+    
+    # Game start: Generate the first problem
+    num1, num2 = generate_addition_problem(difficulty)
+    return render_template('games/addition_game.html', difficulty=difficulty, num1=num1, num2=num2, score=0)
 
 @app.route('/subtraction_game/<difficulty>')
 @login_required

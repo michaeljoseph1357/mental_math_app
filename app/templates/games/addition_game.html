@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ difficulty|capitalize }} Addition Game</h2>
+    <p>Answer as many problems as you can in 2 minutes!</p>
+    <p>Time left: <span id="timer">120</span> seconds</p>
+    <p>Score: <span>{{ score }}</span></p>
+    
+    <form method="POST" action="">
+        <div class="form-group">
+            <label>{{ num1 }} + {{ num2 }} = ?</label>
+            <input type="number" name="answer" class="form-control" required>
+            <input type="hidden" name="correct_answer" value="{{ num1 + num2 }}">
+            <input type="hidden" name="score" value="{{ score }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    // Countdown timer logic
+    let timeLeft = 120;
+    const timerElement = document.getElementById('timer');
+
+    function countdown() {
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert('Time is up! Your final score is {{ score }}.');
+            window.location.href = "{{ url_for('module_selection', module_name='addition') }}";
+        } else {
+            timerElement.textContent = timeLeft;
+            timeLeft--;
+        }
+    }
+
+    const timerInterval = setInterval(countdown, 1000);
+</script>
+{% endblock %}
