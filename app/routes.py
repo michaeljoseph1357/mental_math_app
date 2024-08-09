@@ -39,7 +39,7 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             flash('Logged in successfully!', 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('landing'))
         else:
             flash('Login failed. Please check your username and password.', 'danger')
     return render_template('login.html', form=form)
@@ -54,3 +54,9 @@ def logout():
 @login_required
 def dashboard():
     return render_template('dashboard.html', name=current_user.username)
+
+@app.route('/landing')
+@login_required
+def landing():
+    return render_template('landing.html')
+
