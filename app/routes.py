@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, request, flash, current_ap
 from flask_login import login_user, login_required, logout_user, current_user
 from . import db
 from .models import User
+from .forms import RegistrationForm, LoginForm
 from . import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -18,33 +19,30 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        hashed_password = generate_password_hash(password, method='scrypt', salt_length=16)
-        
-        new_user = User(username=username, password=hashed_password)
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='scrypt', salt_length=16)
+        new_user = User(username=form.username.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
+        flash('Your account has been created! You are now logged in.', 'success')
         return redirect(url_for('dashboard'))
     
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = User.query.filter_by(username=username).first()
-        
-        if user and check_password_hash(user.password, password):
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and check_password_hash(user.password, form.password.data):
             login_user(user)
+            flash('Logged in successfully!', 'success')
             return redirect(url_for('dashboard'))
-        
-        flash('Login failed. Check your username and/or password.')
-    
-    return render_template('login.html')
+        else:
+            flash('Login failed. Please check your username and password.', 'danger')
+    return render_template('login.html', form=form)
 
 @app.route('/logout')
 @login_required
