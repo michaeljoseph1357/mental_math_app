@@ -13,7 +13,7 @@ def load_user(user_id):
 @app.route('/')
 def home():
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('landing'))
     return render_template('index.html')
 
 
@@ -27,7 +27,7 @@ def register():
         db.session.commit()
         login_user(new_user)
         flash('Your account has been created! You are now logged in.', 'success')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('landing'))
     
     return render_template('register.html', form=form)
 
@@ -59,4 +59,57 @@ def dashboard():
 @login_required
 def landing():
     return render_template('landing.html')
+
+@app.route('/module/<module_name>')
+@login_required
+def module_selection(module_name):
+    if module_name in ['addition', 'subtraction', 'multiplication', 'division']:
+        return render_template(f'modules/{module_name}_module.html', module_name=module_name)
+    else:
+        flash('Invalid module selected.', 'danger')
+        return redirect(url_for('landing'))
+    
+
+@app.route('/addition_game/<difficulty>')
+@login_required
+def start_addition_game(difficulty):
+    if difficulty not in ['easy', 'medium', 'hard']:
+        flash('Invalid difficulty level selected.', 'danger')
+        return redirect(url_for('module_selection', module_name='addition'))
+    
+    # Initial game setup can go here
+    return render_template('games/addition_game.html', difficulty=difficulty)
+
+@app.route('/subtraction_game/<difficulty>')
+@login_required
+def start_subtraction_game(difficulty):
+    if difficulty not in ['easy', 'medium', 'hard']:
+        flash('Invalid difficulty level selected.', 'danger')
+        return redirect(url_for('module_selection', module_name='subtraction'))
+    
+    # Initial game setup for subtraction can go here
+    return render_template('games/subtraction_game.html', difficulty=difficulty)
+
+@app.route('/multiplication_game/<difficulty>')
+@login_required
+def start_multiplication_game(difficulty):
+    if difficulty not in ['easy', 'medium', 'hard']:
+        flash('Invalid difficulty level selected.', 'danger')
+        return redirect(url_for('module_selection', module_name='multiplication'))
+    
+    # Initial game setup for multiplication can go here
+    return render_template('games/multiplication_game.html', difficulty=difficulty)
+
+@app.route('/division_game/<difficulty>')
+@login_required
+def start_division_game(difficulty):
+    if difficulty not in ['easy', 'medium', 'hard']:
+        flash('Invalid difficulty level selected.', 'danger')
+        return redirect(url_for('module_selection', module_name='division'))
+    
+    # Initial game setup for division can go here
+    return render_template('games/division_game.html', difficulty=difficulty)
+
+
+
 

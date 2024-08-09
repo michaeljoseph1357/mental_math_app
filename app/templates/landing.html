@@ -6,18 +6,17 @@
     <p>Select the type of problems you want to practice:</p>
     <div class="row">
         <div class="col-md-3">
-            <a href="#" class="btn btn-primary btn-block">Addition</a>  <!-- Replace url_for with # -->
+            <a href="{{ url_for('module_selection', module_name='addition') }}" class="btn btn-primary btn-block">Addition</a>
         </div>
         <div class="col-md-3">
-            <a href="#" class="btn btn-primary btn-block">Subtraction</a>
+            <a href="{{ url_for('module_selection', module_name='subtraction') }}" class="btn btn-primary btn-block">Subtraction</a>
         </div>
         <div class="col-md-3">
-            <a href="#" class="btn btn-primary btn-block">Multiplication</a>
+            <a href="{{ url_for('module_selection', module_name='multiplication') }}" class="btn btn-primary btn-block">Multiplication</a>
         </div>
         <div class="col-md-3">
-            <a href="#" class="btn btn-primary btn-block">Division</a>
+            <a href="{{ url_for('module_selection', module_name='division') }}" class="btn btn-primary btn-block">Division</a>
         </div>
     </div>
-    
 </div>
 {% endblock %}
