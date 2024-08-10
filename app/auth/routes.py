@@ -4,8 +4,24 @@ from . import auth
 from ..forms import RegistrationForm, LoginForm
 from ..models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from .. import db
+from .. import db, login_manager
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+
+@auth.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html', name=current_user.username)
+
+@auth.route('/landing')
+@login_required
+def landing():
+    return render_template('landing.html')
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
@@ -17,7 +33,7 @@ def register():
         db.session.commit()
         login_user(new_user)
         flash('Your account has been created! You are now logged in.', 'success')
-        return redirect(url_for('landing'))
+        return redirect(url_for('auth.landing'))
     
     return render_template('register.html', form=form)
 

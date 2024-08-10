@@ -14,7 +14,7 @@
             <p>Game Type: <strong>{{ game_type }}</strong></p>
             <p>Difficulty: <strong>{{ difficulty }}</strong></p>
             <a href="{{ url_for('game.start_game', game_type=game_type, difficulty=difficulty) }}" class="btn btn-primary">Play Again</a>
-            <a href="{{ url_for('landing') }}" class="btn btn-secondary">Return to Landing Page</a>
+            <a href="{{ url_for('auth.landing') }}" class="btn btn-secondary">Return to Landing Page</a>
         </section>
     </main>
 </div>

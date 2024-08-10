@@ -10,24 +10,9 @@ from datetime import datetime
 from app.utils.utils import generate_problem, update_high_score
 from app.models import HighScore, db
 
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 @app.route('/')
 def home():
     if current_user.is_authenticated:
-        return redirect(url_for('landing'))
+        return redirect(url_for('auth.landing'))
     return render_template('index.html')
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    return render_template('dashboard.html', name=current_user.username)
-
-@app.route('/landing')
-@login_required
-def landing():
-    return render_template('landing.html')
 
