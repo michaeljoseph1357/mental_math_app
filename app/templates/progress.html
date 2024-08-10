@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ game_type|capitalize }} Progress</h2>
+    <p>Here are your high scores for {{ game_type|capitalize }}:</p>
+    <ul>
+        <li><strong>Easy:</strong> {{ high_scores.easy }}</li>
+        <li><strong>Medium:</strong> {{ high_scores.medium }}</li>
+        <li><strong>Hard:</strong> {{ high_scores.hard }}</li>
+    </ul>
+    <a href="{{ url_for('game.module_selection', game_type=game_type) }}" class="btn btn-primary">Back to Modules</a>
+</div>
+{% endblock %}

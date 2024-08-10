@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from . import auth
-from ..forms import RegistrationForm, LoginForm
+from ..forms import RegistrationForm, LoginForm, UpdateProfileForm, UpdatePasswordForm
 from ..models import User, HighScore
 from werkzeug.security import generate_password_hash, check_password_hash
 from .. import db, login_manager
@@ -11,29 +11,26 @@ from .. import db, login_manager
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@auth.route('/dashboard')
+@auth.route('/profile')
 @login_required
-def dashboard():
-    # Fetch user information
-    user = current_user
+def profile():
+    profile_form = UpdateProfileForm(obj=current_user)
+    password_form = UpdatePasswordForm()
+    
+    if profile_form.validate_on_submit():
+        current_user.username = profile_form.username.data
+        db.session.commit()
+        flash('Your username has been updated!', 'success')
+        return redirect(url_for('auth.profile'))
 
-    # Fetch high scores for the current user
-    high_scores = HighScore.query.filter_by(user_id=user.id).all()
+    if password_form.validate_on_submit():
+        # Handle password change logic here
+        current_user.set_password(password_form.password.data)
+        db.session.commit()
+        flash('Your password has been updated!', 'success')
+        return redirect(url_for('auth.profile'))
 
-    # Organize the high scores by game type and difficulty
-    scores_by_game = {
-        'addition': {'easy': None, 'medium': None, 'hard': None},
-        'subtraction': {'easy': None, 'medium': None, 'hard': None},
-        'multiplication': {'easy': None, 'medium': None, 'hard': None},
-        'division': {'easy': None, 'medium': None, 'hard': None},
-    }
-
-    for score in high_scores:
-        if score.game_type in scores_by_game:
-            scores_by_game[score.game_type][score.difficulty] = score.score
-
-    return render_template('dashboard.html', user=user, scores_by_game=scores_by_game)
-
+    return render_template('profile.html', profile_form=profile_form, password_form=password_form)
 
 @auth.route('/landing')
 @login_required

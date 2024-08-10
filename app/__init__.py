@@ -28,6 +28,11 @@ def create_app():
     from .game import game as game_blueprint
     app.register_blueprint(game_blueprint, url_prefix='/game')
 
+    from .progress import progress as progress_blueprint
+    app.register_blueprint(progress_blueprint, url_prefix='/progress')
+
+    
+
     # Import routes inside the app context to avoid circular import issues
     with app.app_context():
         from . import routes, models
