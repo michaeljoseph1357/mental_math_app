@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <h2>{{ difficulty|capitalize }} {{ game_type|capitalize }} Game</h2>
-            <p class="lead">Solve as many problems as you can in {{ timer_value // 60 }} minutes!</p>
+            <p class="lead">Solve as many problems as you can in {{ timer_value }} seconds!</p>
         </div>
     </div>
 
@@ -52,10 +52,6 @@
   const timeLeftInput = document.getElementById('time_left');
   const gameTypeInput = document.getElementById('game_type');
   const difficultyInput = document.getElementById('difficulty');
-  
-  console.log('Initial Time Left:', timeLeft);
-  console.log('Game Type:', gameTypeInput.value);
-  console.log('Difficulty:', difficultyInput.value);
 
   function countdown() {
       timeLeft--;
@@ -65,7 +61,7 @@
           console.log('Time is up, submitting form');
           // Set form action to the new route and submit the form
           const form = document.forms[0];
-          form.action = '/game_over';  // Route for handling game over logic
+          form.action = "{{ url_for('game.game_over') }}";  // Route for handling game over logic
           form.submit();
       } else {
           timerElement.textContent = timeLeft;

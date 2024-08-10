@@ -8,7 +8,7 @@
         {% set modules = [('addition', 'Addition'), ('subtraction', 'Subtraction'), ('multiplication', 'Multiplication'), ('division', 'Division')] %}
         {% for module, label in modules %}
         <div class="col-md-3">
-            <a href="{{ url_for('module_selection', game_type=module) }}" class="btn btn-primary btn-block">{{ label }}</a>
+            <a href="{{ url_for('game.module_selection', game_type=module) }}" class="btn btn-primary btn-block">{{ label }}</a>
         </div>
         {% endfor %}
     </div>
