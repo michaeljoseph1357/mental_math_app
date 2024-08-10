@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from . import auth
 from ..forms import RegistrationForm, LoginForm
-from ..models import User
+from ..models import User, HighScore
 from werkzeug.security import generate_password_hash, check_password_hash
 from .. import db, login_manager
 
@@ -11,12 +11,29 @@ from .. import db, login_manager
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
-
 @auth.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', name=current_user.username)
+    # Fetch user information
+    user = current_user
+
+    # Fetch high scores for the current user
+    high_scores = HighScore.query.filter_by(user_id=user.id).all()
+
+    # Organize the high scores by game type and difficulty
+    scores_by_game = {
+        'addition': {'easy': None, 'medium': None, 'hard': None},
+        'subtraction': {'easy': None, 'medium': None, 'hard': None},
+        'multiplication': {'easy': None, 'medium': None, 'hard': None},
+        'division': {'easy': None, 'medium': None, 'hard': None},
+    }
+
+    for score in high_scores:
+        if score.game_type in scores_by_game:
+            scores_by_game[score.game_type][score.difficulty] = score.score
+
+    return render_template('dashboard.html', user=user, scores_by_game=scores_by_game)
+
 
 @auth.route('/landing')
 @login_required
@@ -45,7 +62,7 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             flash('Logged in successfully!', 'success')
-            return redirect(url_for('landing'))
+            return redirect(url_for('auth.landing'))
         else:
             flash('Login failed. Please check your username and password.', 'danger')
     return render_template('login.html', form=form)
