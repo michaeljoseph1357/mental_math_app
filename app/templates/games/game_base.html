@@ -6,7 +6,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h2 class="display-4">{{ difficulty|capitalize }} {{ game_type|capitalize }} Game</h2>
-            <p class="lead">Solve as many problems as you can in <span id="top-timer">{{ timer_value }}</span> seconds!</p>
+            <p class="lead">Solve as many problems as you can in <span id="top-timer">{{ time_left }}</span> seconds!</p>
         </div>
     </div>
 
@@ -44,39 +44,59 @@
             <h3><i class="fa fa-trophy"></i> Score: <span>{{ score }}</span></h3>
         </div>
         <div class="col-6 text-right">
-            <h3><i class="fa fa-clock"></i> Time left: <span id="bottom-timer">{{ timer_value }}</span> seconds</h3>
+            <h3><i class="fa fa-clock"></i> Time left: <span id="bottom-timer">{{ time_left }}</span> seconds</h3>
         </div>
     </div>
 </div>
 
 <script>
-  // Countdown timer logic
-  let timeLeft = parseInt(document.getElementById('time_left').value);
-  const topTimerElement = document.getElementById('top-timer');
-  const bottomTimerElement = document.getElementById('bottom-timer');
-  const timeLeftInput = document.getElementById('time_left');
-  const gameTypeInput = document.getElementById('game_type');
-  const difficultyInput = document.getElementById('difficulty');
-
-  function countdown() {
-      timeLeft--;
-
-      if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          console.log('Time is up, submitting form');
-          // Set form action to the new route and submit the form
-          const form = document.forms[0];
-          form.action = "{{ url_for('game.game_over') }}";  // Route for handling game over logic
-          form.submit();
-      } else {
-          topTimerElement.textContent = timeLeft;
-          bottomTimerElement.textContent = timeLeft;
-          timeLeftInput.value = timeLeft;  // Update hidden input with the remaining time
-      }
-  }
-
-  const timerInterval = setInterval(countdown, 1000);
-</script>
+    // Countdown timer logic
+    let timeLeft = parseInt(document.getElementById('time_left').value);
+    const topTimerElement = document.getElementById('top-timer');
+    const bottomTimerElement = document.getElementById('bottom-timer');
+    const timeLeftInput = document.getElementById('time_left');  // Reference the time_left input
+    const gameTypeInput = document.getElementById('game_type');
+    const difficultyInput = document.getElementById('difficulty');
+    const answerInput = document.querySelector('input[name="answer"]');  // Reference the answer input field
+  
+    function countdown() {
+        timeLeft--;
+  
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            console.log('Time is up, submitting form');
+            // Set form action to the new route and submit the form
+            const form = document.forms[0];
+            form.action = "{{ url_for('game.game_over') }}";  // Route for handling game over logic
+            form.submit();
+        } else {
+            topTimerElement.textContent = timeLeft;
+            bottomTimerElement.textContent = timeLeft;
+            timeLeftInput.value = timeLeft;  // Update hidden input with the remaining time
+        }
+    }
+  
+    const timerInterval = setInterval(countdown, 1000);
+  
+    // Ensure the answer input field is focused and scrolled into view
+    window.onload = function() {
+        if (answerInput) {
+            answerInput.focus();  // Autofocus the input field
+            answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' });  // Scroll the input into view
+        }
+    };
+  
+    // Also focus and scroll the input after each form submission
+    document.querySelector('form').addEventListener('submit', function() {
+        setTimeout(function() {
+            if (answerInput) {
+                answerInput.focus();  // Autofocus the input field after form submission
+                answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' });  // Scroll the input into view
+            }
+        }, 0);
+    });
+  </script>
+  
 
 <style>
     .math-problem {
