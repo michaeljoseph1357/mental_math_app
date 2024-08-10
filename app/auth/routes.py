@@ -11,26 +11,26 @@ from .. import db, login_manager
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@auth.route('/profile')
+@auth.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     profile_form = UpdateProfileForm(obj=current_user)
     password_form = UpdatePasswordForm()
-    
-    if profile_form.validate_on_submit():
+
+    if request.form.get('form_name') == 'update_username' and profile_form.validate_on_submit():
         current_user.username = profile_form.username.data
         db.session.commit()
         flash('Your username has been updated!', 'success')
         return redirect(url_for('auth.profile'))
 
-    if password_form.validate_on_submit():
-        # Handle password change logic here
-        current_user.set_password(password_form.password.data)
+    if request.form.get('form_name') == 'update_password' and password_form.validate_on_submit():
+        current_user.set_password(password_form.password.data)  # Assuming you have a set_password method
         db.session.commit()
         flash('Your password has been updated!', 'success')
         return redirect(url_for('auth.profile'))
 
     return render_template('profile.html', profile_form=profile_form, password_form=password_form)
+
 
 @auth.route('/landing')
 @login_required

@@ -1,14 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>{{ game_type|capitalize }} Progress</h2>
-    <p>Here are your high scores for {{ game_type|capitalize }}:</p>
-    <ul>
-        <li><strong>Easy:</strong> {{ high_scores.easy }}</li>
-        <li><strong>Medium:</strong> {{ high_scores.medium }}</li>
-        <li><strong>Hard:</strong> {{ high_scores.hard }}</li>
-    </ul>
-    <a href="{{ url_for('game.module_selection', game_type=game_type) }}" class="btn btn-primary">Back to Modules</a>
+<div class="container mt-4">
+    <h2 class="text-center">{{ game_type|capitalize }} Progress</h2>
+    <p class="text-center">Here are your high scores for {{ game_type|capitalize }}:</p>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header text-center">Easy</div>
+                <div class="card-body text-center">
+                    <h4 class="card-title">{{ high_scores.easy }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header text-center">Medium</div>
+                <div class="card-body text-center">
+                    <h4 class="card-title">{{ high_scores.medium }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header text-center">Hard</div>
+                <div class="card-body text-center">
+                    <h4 class="card-title">{{ high_scores.hard }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('game.module_selection', game_type=game_type) }}" class="btn btn-primary">Back to Modules</a>
+    </div>
 </div>
 {% endblock %}

@@ -3,19 +3,31 @@
 {% block title %}Game Over{% endblock %}
 
 {% block content %}
-<div class="container mt-3">
-    <header>
-        <h1>Game Over</h1>
-    </header>
-    <main>
-        <section class="game-summary">
-            <h2>Your Final Score</h2>
-            <p>Your final score is: <strong>{{ score }}</strong></p>
-            <p>Game Type: <strong>{{ game_type }}</strong></p>
-            <p>Difficulty: <strong>{{ difficulty }}</strong></p>
-            <a href="{{ url_for('game.start_game', game_type=game_type, difficulty=difficulty) }}" class="btn btn-primary">Play Again</a>
-            <a href="{{ url_for('auth.landing') }}" class="btn btn-secondary">Return to Landing Page</a>
-        </section>
-    </main>
+<div class="container text-center mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <header>
+                        <h1 class="display-4 text-primary">Game Over</h1>
+                    </header>
+                    <section class="game-summary mt-4">
+                        <h2 class="text-success">Your Final Score</h2>
+                        <p class="lead">You scored: <strong class="text-primary">{{ score }}</strong></p>
+                        <p>Game Type: <strong>{{ game_type|capitalize }}</strong></p>
+                        <p>Difficulty: <strong>{{ difficulty|capitalize }}</strong></p>
+                    </section>
+                    <div class="mt-4">
+                        <a href="{{ url_for('game.start_game', game_type=game_type, difficulty=difficulty) }}" class="btn btn-lg btn-success mr-2">
+                            <i class="fa fa-redo"></i> Play Again
+                        </a>
+                        <a href="{{ url_for('auth.landing') }}" class="btn btn-lg btn-secondary">
+                            <i class="fa fa-home"></i> Return to Landing Page
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

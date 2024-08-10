@@ -1,30 +1,25 @@
 {% extends "base.html" %}
+{% from "bootstrap4/form.html" import render_form %}
 
 {% block content %}
 <div class="container mt-4">
     <h2>User Profile</h2>
-    <form method="POST">
+    
+    <!-- Form to Update Username -->
+    <form method="POST" action="">
         {{ profile_form.hidden_tag() }}
-        <div class="form-group">
-            <label for="username">Change Username</label>
-            {{ profile_form.username(class="form-control") }}
-        </div>
-        <button type="submit" class="btn btn-primary">Update Username</button>
+        <input type="hidden" name="form_name" value="update_username">
+        {{ render_form(profile_form) }}  <!-- Render the profile form -->
     </form>
-
+    
     <hr>
 
-    <form method="POST">
+    <!-- Form to Update Password -->
+    <form method="POST" action="">
         {{ password_form.hidden_tag() }}
-        <div class="form-group">
-            <label for="password">Change Password</label>
-            {{ password_form.password(class="form-control") }}
-        </div>
-        <div class="form-group">
-            <label for="confirm_password">Confirm New Password</label>
-            {{ password_form.confirm_password(class="form-control") }}
-        </div>
-        <button type="submit" class="btn btn-primary">Update Password</button>
+        <input type="hidden" name="form_name" value="update_password">
+        {{ render_form(password_form) }}  <!-- Render the password form -->
     </form>
+
 </div>
 {% endblock %}
