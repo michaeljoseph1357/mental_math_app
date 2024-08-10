@@ -1,21 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Choose a Learning Module</h2>
-    <p>Select the type of problems you want to practice:</p>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Choose a Learning Module</h2>
+    <p class="text-center lead">Select the type of problems you want to practice:</p>
     <div class="row">
         {% set modules = [
-            ('addition', 'Addition', 'fa-plus'), 
-            ('subtraction', 'Subtraction', 'fa-minus'), 
-            ('multiplication', 'Multiplication', 'fa-times'), 
-            ('division', 'Division', 'fa-divide')
+            ('addition', 'Addition', 'fa-plus', 'Sharpen your skills in adding numbers.'),
+            ('subtraction', 'Subtraction', 'fa-minus', 'Improve your subtraction techniques.'),
+            ('multiplication', 'Multiplication', 'fa-times', 'Master the art of multiplication.'),
+            ('division', 'Division', 'fa-divide', 'Become proficient in division.')
         ] %}
-        {% for module, label, icon in modules %}
-        <div class="col-md-3">
-            <a href="{{ url_for('game.module_selection', game_type=module) }}" class="btn btn-primary btn-block">
-                {{ label }} <span>(<span class="fa {{ icon }}"></span>)</span>
-            </a>
+        {% for module, label, icon, description in modules %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h4 class="card-title">{{ label }} <span class="fa {{ icon }}"></span></h4>
+                    <p class="card-text">{{ description }}</p>
+                    <a href="{{ url_for('game.module_selection', game_type=module) }}" class="btn btn-primary btn-block">
+                        Start {{ label }}
+                    </a>
+                </div>
+            </div>
         </div>
         {% endfor %}
     </div>
