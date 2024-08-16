@@ -49,25 +49,25 @@ def start_game(game_type, difficulty):
             user_answer = int(user_answer)
         correct_answer = int(request.form.get('correct_answer'))
         score = int(request.form.get('score'))
-        time_left = int(request.form.get('time_left'))
+        time_left = int(request.form.get('time_left'))  # Get the time left from the form
 
         if user_answer == correct_answer:
             score += 1
             flash('Correct!', 'success')
         else:
             flash('Incorrect, try the next one!', 'danger')
-        
+
         # Generate a new problem
         num1, num2 = generate_problem(difficulty, game_type)
         correct_answer = operation_func(num1, num2)
 
-        return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=score, time_left=time_left, timer_value=timer_value, correct_answer=correct_answer)
+        return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=score, time_left=time_left, correct_answer=correct_answer)
 
     # Initial game start
     num1, num2 = generate_problem(difficulty, game_type)
     correct_answer = operation_func(num1, num2)
 
-    return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=0, time_left=timer_value, timer_value=timer_value, correct_answer=correct_answer)
+    return render_template('games/game_base.html', difficulty=difficulty, game_type=game_type, operation_symbol=operation_symbol, num1=num1, num2=num2, score=0, time_left=timer_value, correct_answer=correct_answer)
 
 
 @game.route('/game_over', methods=['POST'])
